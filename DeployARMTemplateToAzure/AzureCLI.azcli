@@ -1,0 +1,16 @@
+# Deploy an ARM template to Azure
+
+# 1. Sign in to Azure by using the Azure CLI
+az login
+
+# 2. Define resource group for deployment.
+az group create \
+  --name {name of your resource group} \
+  --location "{location}"
+
+  # 3. Deploy the template
+templateFile="{provide-the-path-to-the-template-file}"
+az deployment group create \
+  --name blanktemplate \
+  --resource-group myResourceGroup \
+  --template-file $templateFile
