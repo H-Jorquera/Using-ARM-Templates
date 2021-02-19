@@ -8,9 +8,71 @@ az group create \
   --name {name of your resource group} \
   --location "{location}"
 
-  # 3. Deploy the template
-templateFile="{provide-the-path-to-the-template-file}"
-az deployment group create \
-  --name blanktemplate \
-  --resource-group myResourceGroup \
-  --template-file $templateFile
+  # 3. Deploy a template
+    templateFile="{provide-the-path-to-the-template-file}"
+    az deployment group create \
+    --name blanktemplate \
+    --resource-group myResourceGroup \
+    --template-file $templateFile
+
+     # Example 1: for Batch
+        templateFile="cli.azuredeploy.json"
+        today=$(date +"%d-%b-%Y")
+        DeploymentName="blankCLItemplate-"$today
+
+        az deployment group create \
+        --name $DeploymentName \
+        --template-file $templateFile
+
+        # In one line:
+            az deployment group create --name "addstorageCLI-20-02-2021" --template-file "cli.azuredeploy.json"
+    # Example 2: for Azure CLI parced by PowerShell
+        $templateFile="cli.azuredeploy.json"
+        $today=Get-Date -Format "MM-dd-yyyy"
+        $DeploymentName="add2ndstorageCLItemplate-"+"$today"
+
+        az deployment group create `
+        --name $DeploymentName `
+        --template-file $templateFile
+    
+    # Example 3: Deploy a parameterized ARM template. Provide a unique name and required storage SKU.  -storageSKU Standard_GRS
+        # 3.1, for Batch
+            templateFile="azuredeploy.json"
+            today=$(date +"%d-%b-%Y")
+            DeploymentName="addSkuParameter-"$today
+
+            az deployment group create \
+            --name $DeploymentName \
+            --template-file $templateFile \
+            --parameters storageSKU=Standard_GRS storageName={your-unique-name}
+
+        # 3.2 for Azure CLI parced by PowerShell
+            $templateFile = "parametized.Azuredeploy.json"
+            $today=Get-Date -Format "MM-dd-yyyy"
+            $DeploymentName = "addSkuParameter-"+"$today"
+
+            az deployment group create `
+            --name $DeploymentName `
+            --template-file $templateFile `
+            --parameters storageSKU=Standard_GRS storageName=fjstorageskuparam2021
+            --parameters storageSKU=Standard_GRS storageName={your-unique-name}
+
+  # 4. Working with subscriptions
+    #Find a subscription that contains a specific word in the name 
+        az account list \
+        --refresh \
+        --query "[?contains(name, 'Concierge Subscription')].id" \
+        --output table
+    #In one line
+    az account list --refresh --query "[?contains(name, 'Concierge Subscription')].id" --output table
+
+    # Change your active subscription to the Desired Subscription
+    az account set --subscription {your subscription ID}
+    az account set --subscription c5c36e2b-05be-4554-a493-54cc6f770b2b
+
+    # If deploying to the same Resource group during entire session, set it as default. 
+    # This action lets you omit that parameter from the rest of the Azure PowerShell commands in this session
+    az configure --defaults group=azDeploy-RG
+    az configure --defaults group=learn-a975004f-9e0e-4279-bc99-5dccec8eac03
+
+
