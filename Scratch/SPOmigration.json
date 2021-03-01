@@ -1,0 +1,19 @@
+{
+
+    "Tasks": [
+  
+      {
+        "SourcePath": "\\\\192.168.10.251\\Share\\Data\\JSON Test",        
+        "TargetPath": "https://singergroup.sharepoint.com/sites/IT",
+        "TargetList": "Archived Data",
+        "TargetListRelativePath": "JSON Test",
+  
+        "Settings": {
+  
+          "MigrateHiddenItems": true,
+          "FilterOutPathSpecialCharacters": true,
+          "MigrateOneNoteNotebook": true
+        }
+      }
+    ]
+  }

@@ -7,6 +7,9 @@ az login
 az group create \
   --name {name of your resource group} \
   --location "{location}"
+    
+    # 1 line example
+        az group create --name armTemplate-parametized-RG --location westus2
 
   # 3. Deploy a template
     templateFile="{provide-the-path-to-the-template-file}"
@@ -52,10 +55,46 @@ az group create \
             $DeploymentName = "addSkuParameter-"+"$today"
 
             az deployment group create `
+            --resource-group "armTemplate-parametized-RG"
             --name $DeploymentName `
             --template-file $templateFile `
             --parameters storageSKU=Standard_GRS storageName=fjstorageskuparam2021
-            --parameters storageSKU=Standard_GRS storageName={your-unique-name}
+            # --parameters storageSKU=Standard_GRS storageName={your-unique-name}
+
+            #1 line format:
+             az deployment group create --resource-group "armTemplate-parametized-RG" --name $DeploymentName --template-file $templateFile --parameters storageSKU=Standard_GRS storageName=fjstorageskuparam2021
+
+    # Example 4: Deploy a paramterized ARM template with a sparate Parameters file. 
+        templateFile="{path-to-the-template-file}"
+        devParameterFile="{path-to-azuredeploy.parameters.dev.json}"
+        az group create \
+        --name myResourceGroupDev \
+        --location "East US"
+        az deployment group create \
+        --name devenvironment \
+        --resource-group myResourceGroupDev \
+        --template-file $templateFile \
+        --parameters $devParameterFile
+
+    # Example 4.1:
+        templateFile="tags.azuredeploy.json"
+        devParameterFile="params.tags.azuredeploy.parameters.json"
+        az group create \
+        --name TagsResourceGroupDev \
+        --location "East US"
+        az deployment group create \
+        --name tagsdevenvironment01 \
+        --resource-group TagsResourceGroupDev \
+        --template-file $templateFile \
+        --parameters $devParameterFile
+
+        templateFile="tags.azuredeploy.json"
+        devParameterFile="params.tags.azuredeploy.parameters.json"
+        az deployment group create \
+        --name tagsdevenvironment01 \
+        --resource-group TagsResourceGroupDev \
+        --template-file $templateFile \
+        --parameters $devParameterFile
 
   # 4. Working with subscriptions
     #Find a subscription that contains a specific word in the name 
@@ -69,10 +108,10 @@ az group create \
     # Change your active subscription to the Desired Subscription
     az account set --subscription {your subscription ID}
     az account set --subscription c5c36e2b-05be-4554-a493-54cc6f770b2b
+    az account set --subscription 7f3f0dbf-2c85-447e-b404-36cb8070e983
 
     # If deploying to the same Resource group during entire session, set it as default. 
     # This action lets you omit that parameter from the rest of the Azure PowerShell commands in this session
     az configure --defaults group=azDeploy-RG
     az configure --defaults group=learn-a975004f-9e0e-4279-bc99-5dccec8eac03
-
-
+    az configure --defaults group=learn-971b980a-bdf6-4ced-a634-5f12ab16d3e2

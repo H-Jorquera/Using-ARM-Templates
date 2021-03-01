@@ -34,14 +34,57 @@ New-AzResourceGroupDeployment `
       -storageName {your-unique-name} `
       -storageSKU Standard_GRS
 
+    # Example 3: Deploy a paramterized ARM template with a sparate Parameters file.
+    $templateFile = "{path-to-the-template-file}"
+    $parameterFile="{path-to-azuredeploy.parameters.dev.json}"
+    New-AzResourceGroup `
+      -Name myResourceGroupDev `
+      -Location "East US"
+    New-AzResourceGroupDeployment `
+      -Name devenvironment `
+      -ResourceGroupName myResourceGroupDev `
+      -TemplateFile $templateFile `
+      -TemplateParameterFile $parameterFile
+
+      # Example 3.1:
+      $templateFile = 'tags.azuredeploy.json'
+      $parameterFile= 'params.tags.azuredeploy.parameters.json'
+      #New-AzResourceGroup `
+      #  -Name TagsResourceGroupDev `
+      #  -Location "East US"
+      New-AzResourceGroupDeployment `
+        -Name tagsstoragedeployment02 `
+      #  -ResourceGroupName TagsResourceGroupDev `
+        -TemplateFile $templateFile `
+        -TemplateParameterFile $parameterFile
+
+        New-AzResourceGroupDeployment -Name tagsstoragedeployment02 -TemplateFile tags.azuredeploy.json -TemplateParameterFile params.tags.azuredeploy.parameters.json
+
 # 4. Working with subscriptions
 Connect-AzAccount
 Get-AzSubscription
 
-    # Change your active subscription to the Desired Subscription
+  # Change your active subscription to the Desired Subscription
         $context = Get-AzSubscription -SubscriptionId {Your subscription ID}
         Set-AzContext $context
 
     # If deploying to the same Resource group during entire session, set it as default. 
     # This action lets you omit that parameter from the rest of the Azure PowerShell commands in this session
         Set-AzDefault -ResourceGroupName azDeploy-RG
+
+        $templateFile = "tags.azuredeploy.json"
+        $today=Get-Date -Format "MM-dd-yyyy"
+        $deploymentName="tagsstorage01-"+"$today"
+        New-AzResourceGroupDeployment `
+          -Name $deploymentName `
+          -TemplateFile $templateFile `
+          -storagePrefix tagsorage
+
+          $templateFile = "azuredeploy.json"
+          $today=Get-Date -Format "MM-dd-yyyy"
+          $deploymentName="updateTags-"+"$today"
+          New-AzResourceGroupDeployment `
+            -Name $deploymentName `
+            -TemplateFile $templateFile `
+            -storagePrefix lisfranc `
+            -storageSKU Standard_LRS
